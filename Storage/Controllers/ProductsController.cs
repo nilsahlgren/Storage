@@ -19,6 +19,7 @@ namespace Storage.Controllers
             _context = context;
         }
 
+        /*
         // GET: Products
         public async Task<IActionResult> Index()
         {
@@ -26,6 +27,7 @@ namespace Storage.Controllers
                           View(await _context.Product.ToListAsync()) :
                           Problem("Entity set 'StorageContext.Product'  is null.");
         }
+        */
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -48,25 +50,32 @@ namespace Storage.Controllers
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
     
-        public IActionResult ProductView()
+        public async Task<IActionResult> ProductView()
         {
-            IEnumerable<ProductViewModel> ProductViewModelData = new List<ProductViewModel>();
-
-            foreach (Product p in _context.Product)
+            IEnumerable<ProductViewModel> model = await _context.Product.Select(p => new ProductViewModel
             {
-                ProductViewModel temp = new ProductViewModel();
-                temp.Name = p.Name;
-                temp.Price = p.Price;
-                temp.Count = p.Count;
-                temp.InventoryValue = temp.Price * temp.Count;
-                ProductViewModelData.Append(temp);
-            }
+                Name = p.Name,
+                Price = p.Price,
+                Count = p.Count,
+                InventoryValue = p.Price * p.Count
+            }).ToListAsync();
 
-            return View(ProductViewModelData);
+            return View(model);
         }
 
+        public async Task<IActionResult> Index(string category)
+        {
 
+            var products = from p in _context.Product
+                         select p;
 
+            if (!String.IsNullOrEmpty(category))
+            {
+                products = products.Where(s => s.Category == category);
+            }
+
+          return View(await products.ToListAsync());
+        }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
        

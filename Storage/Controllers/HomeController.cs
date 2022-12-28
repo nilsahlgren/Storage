@@ -15,7 +15,11 @@ namespace Storage.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var model = new Person
+            {
+                Age = 15
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

@@ -7,7 +7,7 @@ namespace Storage.Models
         public int Id { get; set; }
 
         [StringLength(20, ErrorMessage = "Max 20 characters allowed")]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Range(0, 999999)]
         public int Price { get; set; }
